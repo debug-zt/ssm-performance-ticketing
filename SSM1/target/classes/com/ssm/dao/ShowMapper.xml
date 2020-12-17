@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- sql语句保存在Mybatis的局部配置文件中
+     解释：
+    （1）namespace：命名空间，其值为某一个dao层接口的具体路径,
+	    表示这个类要使用相应的SQL语句，这个具体路径不要自己写，可以选中该类，右键，选择“copy reference”,然后粘贴即可
+    （2）select标签存放查询语句；
+    （3）id:在整个配置文件中id值必须唯一，一般情况下，其值与dao层类中的使用该SQL语句的方法名保持一致；
+    （4）resultType：指定当前sql查询语句返回的数据类型。类型不是sql语句的最终类型，
+	     而是某一条数据的类型，一般用实体类表示，也要用该实体类的“全路径”来表示，运行时系统会自动将实体类的对象创建出来
+    （5）可以编写多条sql语句
+ -->
+
+<mapper namespace="com.ssm.dao.ShowMapper">
+    <select id="getAllShow" resultType="Allshow">
+        select *
+        from allshow;
+    </select>
+
+    <insert id="addShow" parameterType="AllShow">
+        insert into allshow(showName,showCate,showDate,showPrice,showPosit,remainTicket,showPic)
+        values (#{showName}, #{showCate}, #{showDate},
+         #{showPrice}, #{showPosit}, #{remainTicket}, #{showPic});
+    </insert>
+
+    <delete id="deleteShow" parameterType="long">
+        delete from allshow
+        where showId = #{0};
+    </delete>
+
+    <update id="updateShow" parameterType="AllShow">
+        update allshow
+        <set>
+            <if test="showName!=null">
+                showName = #{showName},
+            </if>
+            <if test="showCate!=null">
+                showCate = #{showCate},
+            </if>
+            <if test="showDate!=null">
+                showDate = #{showDate},
+            </if>
+            <if test="showPrice!=null">
+                showPrice = #{showPrice},
+            </if>
+            <if test="showPosit!=null">
+                showPosit = #{showPosit},
+            </if>
+            <if test="remainTicket!=null">
+                remainTicket = #{remainTicket},
+            </if>
+            <if test="showPic!=null">
+                showPic = #{showPic},
+            </if>
+            showId = #{showId}
+        </set>
+        where showId = #{showId}
+    </update>
+
+    <select id="getShowById" resultType="AllShow" parameterType="int">
+        select *
+        from allshow
+        where showId = #{0};
+    </select>
+
+    <select id="getShowByCate" resultType="AllShow" parameterType="String">
+        select *
+        from allshow
+        where showCate like "%"#{showCate，jdbcType = VARCHAR}"%"
+    </select>
+
+    <select id="getShowByKeyWord" resultType="Map" parameterType="String">
+        select *
+        from allshow
+        where showName like "%"#{Key, jdbcType = VARCHAR}"%" or showCate like "%"#{Key, jdbcType = VARCHAR}"%"
+        or showPrice like "%"#{Key, jdbcType = VARCHAR}"%" or showPosit like "%"#{Key, jdbcType = VARCHAR}"%";
+    </select>
+
+    <select id="getShowByKeyWordWithSort" resultType="Map">
+        select *
+        from allshow
+        where showName like "%"#{arg0, jdbcType = VARCHAR}"%" or showCate like "%"#{arg0, jdbcType = VARCHAR}"%"
+        or showPrice like "%"#{arg0, jdbcType = VARCHAR}"%" or showPosit like "%"#{arg0, jdbcType = VARCHAR}"%"
+        order by ${arg1} ${arg2};
+    </select>
+
+
+    <select id="getShowByKeyWord2" resultType="AllShow" parameterType="String">
+        select *
+        from allshow
+        where showName like "%"#{Key, jdbcType = VARCHAR}"%" or showCate like "%"#{Key, jdbcType = VARCHAR}"%"
+        or showPrice like "%"#{Key, jdbcType = VARCHAR}"%" or showPosit like "%"#{Key, jdbcType = VARCHAR}"%";
+    </select>
+
+
+</mapper>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssm.dao.OrderMapper">
+    <insert id="addNewOrder" parameterType="Orderlist">
+        insert into
+        orderlist(userId,userName,cost,orderCreateTime)
+        values (#{userId},#{userName},#{cost},#{orderCreateTime})
+    </insert>
+
+    <select id="getOrderId" resultType="long" parameterType="String">
+        select orderId from orderlist
+        where orderCreateTime = #{orderCreateTime}
+    </select>
+
+    <select id="getOrderByUserId" resultType="Orderlist">
+        select * from orderlist
+        where userId = #{userId}
+    </select>
+
+    <delete id="deleteOrder" parameterType="long">
+        delete from orderlist
+        where orderId = #{orderId}
+    </delete>
+
+    <resultMap id="orderAndDetail" type="Orderlist">
+        <id property="orderId" column="orderId" />
+        <result property="userId" column="userId" />
+        <result property="userName" column="userName" />
+        <result property="cost" column="cost" />
+        <result property="orderCreateTime" column="orderCreateTime" />
+        <collection property="orderdetails" ofType="Orderdetail">
+            <id property="orderId" column="orderId" />
+            <id property="showId" column="showId" />
+            <result property="showName" column="showName" />
+            <result property="showNum" column="showNum" />
+            <result property="showPic" column="showPic" />
+            <result property="showPrice" column="showPrice" />
+        </collection>
+    </resultMap>
+    <select id="adminOrder" resultMap="orderAndDetail">
+        select * from orderlist,orderdetail
+        where orderlist.orderId = orderdetail.orderId
+    </select>
+</mapper>
+

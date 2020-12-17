@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/aop
+	   http://www.springframework.org/schema/aop/spring-aop.xsd
+	   http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd">
+
+
+    <!--2.加载数据库信息文件-->
+    <context:property-placeholder location="classpath:database.properties"/>
+
+    <!--3.配置德鲁伊数据源,将mybatis中的数据源配置信息移到这里-->
+    <bean id="ds" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="driverClassName" value="${jdbc.driver}"/>
+    </bean>
+    <!--4.配置MyBatis的sqlSession工厂 ,让Spring框架管理mybatis中的Session对象-->
+    <bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!-- 指定该 session对象使用数据源ds的信息去访问数据库 -->
+        <property name="dataSource" ref="ds"/>
+        <property name="configLocation" value="classpath:mybatis.xml" />
+        <!--指定session对象去读取该路径下的Mapper的映射文件-->
+<!--        <property name="mapperLocations" value="classpath:com/ssm/dao/*.xml"/>-->
+        <!--指定实体类的别名-->
+<!--        <property name="typeAliasesPackage" value="com.ssm.bean"/>-->
+    </bean>
+    <!--5.最佳方法：Spring框架扫描Mapper层接口，自动给Mapper层接口生成代理对象，
+     将接口与mybatis的SQL局部配置文件中的sql语句关联,
+     但是要注意，指定bean的id时，它的默认值时当前类名，且首字母改小写-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="sqlSessionFactoryBeanName" value="sessionFactory" />
+        <property name="basePackage" value="com.ssm.dao"/>
+    </bean>
+
+    <context:component-scan base-package="com.ssm.*" />
+    <context:component-scan base-package="com.ssm.service" />
+    <aop:aspectj-autoproxy />
+    <!-- 声明事务管理 -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="ds" />
+    </bean>
+
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+</beans>

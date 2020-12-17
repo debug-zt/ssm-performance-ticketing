@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.ssm.dao.CartMapper">
+
+    <insert id="addCart" parameterType="Cart">
+        insert into cart
+        values (#{cId},#{showId},#{showNum})
+    </insert>
+
+    <delete id="deleteCart" parameterType="Cart">
+        delete from cart where cId = #{cId}
+    </delete>
+
+    <delete id="deleteShow" parameterType="Cart">
+        delete from cart where cId = #{cId} and showId = #{showId}
+    </delete>
+
+    <resultMap id="showCartMap" type="Cart">
+        <id property="cId" column="cId" />
+        <id property="showId" column="showId" />
+        <result property="showNum" column="showNum" />
+        <association property="allshow" javaType="Allshow">
+            <id property="showId" column="showId" />
+            <result property="showPrice" column="showPrice" />
+            <result property="showName" column="showName"/>
+            <result property="showCate" column="showCate" />
+            <result property="showPic" column="showPic" />
+        </association>
+    </resultMap>
+    <select id="showCartAll" resultMap="showCartMap">
+        select * from cart ,allshow
+        where cId = #{cId}
+        and cart.showId = allshow.showId
+    </select>
+
+    <select id="showCart" resultType="Cart">
+        select * from cart where cId = #{cId} and showId = #{showId}
+    </select>
+
+    <update id="updateShowNum" parameterType="Cart">
+        update cart set showNum = #{showNUm}
+        where cId = #{cId} and showId = #{showId}
+    </update>
+</mapper>    

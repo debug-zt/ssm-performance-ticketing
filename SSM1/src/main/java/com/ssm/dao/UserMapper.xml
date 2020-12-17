@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.ssm.dao.UserMapper">
+
+    <update id="updateUserData" parameterType="User">
+        update user
+        <set>
+            <if test="userName!=null">
+                userName=#{userName},
+            </if>
+            <if test="userPassword!=null">
+                userPassword=#{userPassword},
+            </if>
+            <if test="userHead!=null">
+                userHead=#{userHead},
+            </if>
+            <if test="userAddress!=null">
+                userAddress=#{userAddress},
+            </if>
+            <if test="userPhone!=null">
+                userPhone=#{userPhone},
+            </if>
+            <if test="userSex!=null">
+                userSex=#{userSex},
+            </if>
+            <if test="userBirthday!=null">
+                userBirthday=#{userBirthday},
+            </if>
+            userId=#{userId}
+        </set>
+        where userId=#{userId}
+    </update>
+
+    <update id="userBuy" parameterType="User">
+        update user
+        <set>
+            <if test="userBalance!= null">
+                userBalance=#{userBalance},
+            </if>
+        </set>
+        where userId=#{userId}
+    </update>
+
+    <select id="findUserById"  resultType="User">
+        SELECT *
+        FROM user
+        WHERE userId=#{userId}
+    </select>
+
+    <select id="findUserByName"  resultType="User">
+        SELECT *
+        FROM user
+        WHERE userName=#{userName}
+    </select>
+
+    <select id="findUserByPhone" resultType="User">
+    SELECT *
+    FROM user
+    WHERE userPhone=#{userPhone}
+    </select>
+
+    <insert id="addUser" parameterType="User">
+        insert into user(userName,userPassword)
+        values
+        (#{userName},#{userPassword})
+    </insert>
+
+</mapper>    
